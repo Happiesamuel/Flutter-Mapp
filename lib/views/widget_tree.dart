@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertest/data/constants.dart';
 import 'package:fluttertest/data/notifiers.dart';
 import 'package:fluttertest/views/pages/home_page.dart';
 import 'package:fluttertest/views/pages/profile_page.dart';
 import 'package:fluttertest/views/pages/settings_page.dart';
 import 'package:fluttertest/views/widgets/navbar_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List<Widget> pages = [HomePage(), ProfilePage()];
 
-class WidgetTree extends StatelessWidget {
+class WidgetTree extends StatefulWidget {
   const WidgetTree({super.key});
+
+  @override
+  State<WidgetTree> createState() => _WidgetTreeState();
+}
+
+class _WidgetTreeState extends State<WidgetTree> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,8 +28,14 @@ class WidgetTree extends StatelessWidget {
             valueListenable: isDarkModeNotifer,
             builder: (BuildContext context, dynamic value, Widget? child) {
               return IconButton(
-                onPressed: () {
+                onPressed: () async {
                   isDarkModeNotifer.value = !isDarkModeNotifer.value;
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  await prefs.setBool(
+                    KConstants.themeKey,
+                    isDarkModeNotifer.value,
+                  );
                 },
                 icon: Icon(value ? Icons.light_mode : Icons.dark_mode),
               );
