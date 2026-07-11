@@ -45,7 +45,7 @@ class WidgetTree extends StatelessWidget {
       body: ValueListenableBuilder(
         valueListenable: selectedPageNotifer,
         builder: (BuildContext context, dynamic value, Widget? child) {
-          return pages.elementAt(value);
+          return SingleChildScrollView(child: pages.elementAt(value));
         },
       ),
       bottomNavigationBar: NavbarWidget(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertest/views/widget_tree.dart';
-import 'package:fluttertest/views/widgets/hero_widget.dart';
+import 'package:fluttertest/views/pages/login_page.dart';
+import 'package:lottie/lottie.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -10,24 +10,58 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            HeroWidget(),
-            FilledButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return WidgetTree();
-                    },
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: .center,
+              spacing: 20,
+              children: [
+                Lottie.asset('assets/lotties/welcome.json', height: 400),
+                FittedBox(
+                  child: Text(
+                    'Flutter Mapp',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 50,
+                      letterSpacing: 50.0,
+                    ),
                   ),
-                );
-              },
-              child: Text('Login'),
+                ),
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    minimumSize: Size(double.infinity, 40.0),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return LoginPage(title: 'Register');
+                        },
+                      ),
+                    );
+                  },
+                  child: Text('Get Started'),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    minimumSize: Size(double.infinity, 40.0),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return LoginPage(title: 'Login');
+                        },
+                      ),
+                    );
+                  },
+                  child: Text('Login'),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
