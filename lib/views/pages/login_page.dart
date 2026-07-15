@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertest/views/widget_tree.dart';
 import 'package:fluttertest/views/widgets/hero_widget.dart';
-import 'package:lottie/lottie.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -12,11 +11,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController controllerEmail = TextEditingController(text: '123');
-  TextEditingController controllerPassword = TextEditingController(text: '456');
-  String confirmedEmail = '123';
-  String confirmedPassword = '456';
-
+  final formKey = GlobalKey<FormState>();
+  TextEditingController controllerEmail = TextEditingController();
+  TextEditingController controllerPassword = TextEditingController();
+  String confirmedEmail = '123@123';
+  String confirmedPassword = '123';
+  bool showPassword = true;
   @override
   void dispose() {
     controllerEmail.dispose();
@@ -43,39 +43,63 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: .center,
                     children: [
                       Center(child: HeroWidget(title: widget.title)),
-                      TextField(
-                        controller: controllerEmail,
-                        decoration: InputDecoration(
-                          hintText: 'Enter your email',
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          spacing: 20,
+                          children: [
+                            field(
+                              controller: controllerEmail,
+                              hintText: 'Enter your email',
+                              labelText: 'Email',
+                              onEditingComplete: () => setState(() {}),
+                              icon: Icon(Icons.email),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Email is required';
+                                }
+                                if (!value.contains('@')) {
+                                  return 'Enter a valid email';
+                                }
+                                return null;
+                              },
+                            ),
+                            field(
+                              controller: controllerPassword,
+                              hintText: 'Enter your password',
+                              labelText: 'Password',
+                              onEditingComplete: () => setState(() {}),
+                              icon: Icon(Icons.password),
+                              handlePassword: () => setState(() {
+                                showPassword = !showPassword;
+                              }),
+                              showPassword: showPassword,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Password is required';
+                                }
+                                if (value.length < 3) {
+                                  return 'Password must be at least 3 characters';
+                                }
+                                return null;
+                              },
+                            ),
+                            FilledButton(
+                              style: FilledButton.styleFrom(
+                                minimumSize: Size(double.infinity, 40.0),
+                              ),
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  handleLoin();
+                                }
+                              },
+                              child: Text(widget.title),
+                            ),
+                          ],
                         ),
-                        onEditingComplete: () {
-                          setState(() {
-                            // controller.dispose()
-                          });
-                        },
                       ),
-                      TextField(
-                        controller: controllerPassword,
-                        // keyboardType: keyb,
-                        decoration: InputDecoration(
-                          hintText: 'Enter your password',
-                          labelText: 'Password',
-                          prefixIcon: Icon(Icons.password),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onEditingComplete: () {
-                          setState(() {
-                            // controller.dispose()
-                          });
-                        },
-                      ),
+                      SizedBox(height: 50),
+
                       // ElevatedButton(
                       //   onPressed: () {
                       //     showModalBottomSheet(
@@ -108,16 +132,6 @@ class _LoginPageState extends State<LoginPage> {
                       //   },
                       //   child: Text('Show Sheet'),
                       // ),
-                      FilledButton(
-                        style: FilledButton.styleFrom(
-                          minimumSize: Size(double.infinity, 40.0),
-                        ),
-                        onPressed: () {
-                          handleLoin();
-                        },
-                        child: Text(widget.title),
-                      ),
-                      SizedBox(height: 50),
                     ],
                   ),
                 ),
@@ -144,6 +158,46 @@ class _LoginPageState extends State<LoginPage> {
         ),
         (route) => false,
       );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: Duration(seconds: 5),
+          content: Text('Invalid credentials...email:123@123,password:123'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
+}
+
+Widget field({
+  required TextEditingController controller,
+  required String hintText,
+  required String labelText,
+  required VoidCallback onEditingComplete,
+  required Icon icon,
+  required FormFieldValidator validator,
+  GestureTapCallback? handlePassword,
+  bool? showPassword,
+}) {
+  return TextFormField(
+    controller: controller,
+    obscureText:
+        labelText == 'Password' && showPassword != null && showPassword && true,
+    decoration: InputDecoration(
+      hintText: hintText,
+      labelText: labelText,
+      prefixIcon: icon,
+      suffixIcon: labelText == 'Password'
+          ? GestureDetector(
+              onTap: handlePassword,
+              child: Icon(Icons.remove_red_eye),
+            )
+          : null,
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+    ),
+    onEditingComplete: onEditingComplete,
+    validator: validator,
+    autovalidateMode: AutovalidateMode.onUserInteraction,
+  );
 }
