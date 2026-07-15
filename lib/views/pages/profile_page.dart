@@ -21,6 +21,10 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: EdgeInsets.all(20.0),
       child: Column(
         children: [
+          CircleAvatar(
+            radius: 50,
+            backgroundImage: AssetImage('assets/images/apple.jpeg'),
+          ),
           ListTile(
             onTap: () {
               selectedPageNotifer.value = 0;

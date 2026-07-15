@@ -22,7 +22,7 @@ class _WidgetTreeState extends State<WidgetTree> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Flutter Mapp'),
-        centerTitle: true,
+        centerTitle: false,
         actions: [
           ValueListenableBuilder(
             valueListenable: isDarkModeNotifer,
