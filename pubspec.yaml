@@ -39,6 +39,8 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   smooth_page_indicator: ^2.0.1
   http: ^1.6.0
+  swipeable_page_route: ^0.4.8
+  image_picker: ^1.2.3
 
 dev_dependencies:
   flutter_test:
